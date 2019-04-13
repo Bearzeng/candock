@@ -52,14 +52,19 @@ def Normalize(data,maxmin,avg,sigma):
     data = np.clip(data, -maxmin, maxmin)
     return (data-avg)/sigma
 
-def ToTensor(data,target,no_cuda = False):
-
-    data = torch.from_numpy(data).float()
-    target = torch.from_numpy(target).long()
-    if not no_cuda:
-        data = data.cuda()
-        target = target.cuda()
-    return data,target
+def ToTensor(data,target=None,no_cuda = False):
+    if target is not None:
+        data = torch.from_numpy(data).float()
+        target = torch.from_numpy(target).long()
+        if not no_cuda:
+            data = data.cuda()
+            target = target.cuda()
+        return data,target
+    else:
+        data = torch.from_numpy(data).float()
+        if not no_cuda:
+            data = data.cuda()
+        return data
 
 def random_transform_1d(data,finesize,test_flag):
     length = len(data)
@@ -76,7 +81,7 @@ def random_transform_1d(data,finesize,test_flag):
             result = result[::-1]
 
         #random amp
-        result = result*random.uniform(0.95,1.05)
+        result = result*random.uniform(0.8,1.2)
 
     return result
 

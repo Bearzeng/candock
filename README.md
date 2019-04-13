@@ -48,9 +48,10 @@
   | Network                  | Label average recall | Label average accuracy | error rate |
   | :----------------------- | :------------------- | ---------------------- | ---------- |
   | lstm                     |                      |                        |            |
-  | resnet18_1d              |                      |                        |            |
+  | resnet18_1d              | 0.8263               | 0.9601                 | 0.0997     |
   | DFCNN+resnet18           | 0.8261               | 0.9594                 | 0.1016     |
   | DFCNN+multi_scale_resnet | 0.8196               | 0.9631                 | 0.0922     |
+  | multi_scale_resnet_1d    | 0.8400               | 0.9595                 | 0.1013     |
 
 * sleep-edfx(only sleep time)<br>
 
@@ -69,7 +70,7 @@
   | resnet18_1d    |                      |                        |            |
   | DFCNN+resnet18 | 0.7823               | 0.909                  | 0.2276     |
   | DFCNN+resnet50 |                      |                        |            |
-  
+
 #### Subject Cross-Validation Results
 
 ## 心路历程

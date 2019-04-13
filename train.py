@@ -1,33 +1,38 @@
-import numpy as np
-import time
-import util
 import os
 import time
-import transformer
-import dataloader
-# import models
-from creatnet import CreatNet
+
+import numpy as np
 import torch
 from torch import nn, optim
-import statistics
 import torch.backends.cudnn as cudnn
-import heatmap
-from options import Options
 import warnings
 warnings.filterwarnings("ignore")
+
+import util
+import transformer
+import dataloader
+import statistics
+import heatmap
+from creatnet import CreatNet
+from options import Options
+
 
 opt = Options().getparse()
 localtime = time.asctime(time.localtime(time.time()))
 util.writelog('\n\n'+str(localtime)+'\n'+str(opt))
 
 t1 = time.time()
-signals,stages = dataloader.loaddataset(opt,opt.dataset_dir,opt.dataset_name,opt.signal_name,opt.sample_num,shuffle=True,BID=None)
+
+signals,stages = dataloader.loaddataset(opt,opt.dataset_dir,opt.dataset_name,opt.signal_name,opt.sample_num,shuffle=False,BID=None)
 stage_cnt,stage_cnt_per = statistics.stage(stages)
-signals,stages = transformer.batch_generator(signals,stages,opt.batchsize,shuffle = True)
+
+if opt.Cross_Validation =='k_fold':
+    signals,stages = transformer.batch_generator(signals,stages,opt.batchsize,shuffle = True)
+    train_sequences,test_sequences = transformer.k_fold_generator(len(stages),opt.fold_num)
+
+
 batch_length = len(stages)
 print('length of batch:',batch_length)
-train_sequences,test_sequences = transformer.k_fold_generator(batch_length,opt.fold_num)
-
 show_freq = int(len(train_sequences[0])/5)
 util.show_menory()
 t2 = time.time()
@@ -143,9 +148,7 @@ for fold in range(opt.fold_num):
     util.writelog('confusion_mat:\n'+str(confusion_mat))
 
 recall,acc,error  = statistics.result(final_confusion_mat)
-#print('all finished!\n',final_confusion_mat)
-#print('avg_recall:','%.4f' % recall,'avg_acc:','%.4f' % acc,'error:','%.4f' % error)
 util.writelog('final:'+'  test avg_recall:'+str(round(recall,4))+'  avg_acc:'+str(round(acc,4))+'  error:'+str(round(error,4)),True)
-util.writelog('confusion_mat:\n'+str(confusion_mat),True)
-statistics.stagefrommat(confusion_mat)
+util.writelog('confusion_mat:\n'+str(final_confusion_mat),True)
+statistics.stagefrommat(final_confusion_mat)
 heatmap.draw(final_confusion_mat,name = 'final_test')
