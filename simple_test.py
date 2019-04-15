@@ -25,7 +25,7 @@ if opt.pretrained:
     net.load_state_dict(torch.load('./checkpoints/pretrained/'+opt.model_name+'.pth'))
 
 # N3(S4+S3)->0  N2->1  N1->2  REM->3  W->4
-stage_map={0:'stage3',1:'stage2',2:'stage3',3:'REM',4:'Wake'}
+stage_map={0:'stage1',1:'stage2',2:'stage3',3:'REM',4:'Wake'}
 
 def runmodel(eegdata):
     eegdata = eegdata.reshape(1,-1)
